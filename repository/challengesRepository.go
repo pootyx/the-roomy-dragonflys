@@ -11,8 +11,8 @@ type Challenge struct {
 	gorm.Model
 	UserId      string    `json:"userId"`
 	ChallengeId string    `json:"challengeId"`
-	Title       string    `json: "title"`
-	Description string    `json:"description" gorm:"not null"`
+	Title	string 		  `json: "title"`
+	Description string    `json:"description""`
 	IsActive    bool      `json:"isActive"`
 	EndDate     time.Time `json:"endDate"`
 	Outcome     bool      `json:"outcome"`

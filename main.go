@@ -44,5 +44,7 @@ func HandleChallengeRequests(r *mux.Router) {
 }
 
 func HandleBetRequests(r *mux.Router) {
-
+	r.HandleFunc("/bets", controllers.GetBets).Methods("GET")
+	r.HandleFunc("/bets", controllers.CreateBet).Methods("POST")
+	r.HandleFunc("/bets/{uuid}", controllers.GetBet).Methods("GET")
 }
