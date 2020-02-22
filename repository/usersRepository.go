@@ -50,6 +50,10 @@ func (user *User) CreateUser() (map[string]interface{}, int) {
 	return resp, 201
 }
 
+func DeleteUserById(userId string) {
+	GetDB().Table("users").Where("user_id = ?", userId).Delete(&User{})
+}
+
 func (user *User) Validate() (map[string]interface{}, bool) {
 	if user.UserId == "" {
 		return utils.Message("UserId data attribute is missing!"), false

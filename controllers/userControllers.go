@@ -80,3 +80,14 @@ func GetUserBets(w http.ResponseWriter, r *http.Request) {
 		util.Respond(w, resp)
 	}
 }
+
+func DeleteUserById(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId := params["uuid"]
+
+	repository.DeleteUserById(userId)
+
+	resp := util.Message("User successfully deleted!")
+	w.WriteHeader(204)
+	util.Respond(w, resp)
+}

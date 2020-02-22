@@ -34,6 +34,7 @@ func HandleUserRequests(r *mux.Router) {
 	r.HandleFunc("/users/{uuid}", controllers.GetUser).Methods("GET")
 	r.HandleFunc("/users/{uuid}/challenges", controllers.GetUserChallenges).Methods("GET")
 	r.HandleFunc("/users/{uuid}/bets", controllers.GetUserBets).Methods("GET")
+	r.HandleFunc("/users/{uuid}", controllers.DeleteUserById).Methods("DELETE")
 }
 
 func HandleChallengeRequests(r *mux.Router) {
@@ -41,6 +42,7 @@ func HandleChallengeRequests(r *mux.Router) {
 	r.HandleFunc("/challenges", controllers.CreateChallenge).Methods("POST")
 	r.HandleFunc("/challenges/{uuid}", controllers.GetChallenge).Methods("GET")
 	r.HandleFunc("/challenges/{uuid}/bets", controllers.GetChallengeBets).Methods("GET")
+	r.HandleFunc("/challenges/{uuid}/bets/amount", controllers.GetAmountByChallenges).Methods("GET")
 }
 
 func HandleBetRequests(r *mux.Router) {
