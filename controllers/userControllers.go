@@ -2,7 +2,10 @@ package controllers
 
 import (
 	repository "../repository"
+	u "../utils"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -12,19 +15,20 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Create Users!")
-	repository.CreateUserToDb()
-	/*user := &repository.User{}
+	fmt.Fprintf(w, "POST call /users")
+	var newUser repository.User
 
-	err := json.NewDecoder(r.Body).Decode(user) //decode the request body into struct and failed if any error occur
+	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))
 		return
 	}
 
-	resp := user.Create()
-	u.Respond(w, resp)*/
+	fmt.Println(reqBody)
+	json.Unmarshal(reqBody, &newUser)
 
+	repository.User.Create()
+	fmt.Println(newUser)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
