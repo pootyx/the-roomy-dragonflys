@@ -2,6 +2,7 @@ package repository
 
 import (
 	u "../utils"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -32,11 +33,22 @@ func (challenge *Challenge) Create() map[string]interface{} {
 	return resp
 }
 
-func GetChallenge(id string) *Challenge {
+func GetById(id string) *Challenge {
 	challenge := &Challenge{}
-	GetDB().Table("challenges").Where("challenge_id = ?", id).First(challenge)
-	if challenge.Description == "" {
+	err := GetDB().Table("challenges").Where("challenge_id = ?", id).First(challenge).Error
+	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 	return challenge
+}
+
+func GetAll() []*Challenge {
+	challenges := make([]*Challenge, 0)
+	err := GetDB().Table("challenges").Find(&challenges).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return challenges
 }

@@ -11,11 +11,13 @@ import (
 )
 
 func GetChallenges(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get Challenge!")
+	data := repository.GetAll()
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
 }
 
 func CreateChallenge(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Create Challenge!")
 	var newChallenge repository.Challenge
 
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -33,7 +35,7 @@ func CreateChallenge(w http.ResponseWriter, r *http.Request) {
 func GetChallenge(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["uuid"]
-	data := repository.GetChallenge(id)
+	data := repository.GetById(id)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
