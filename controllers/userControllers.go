@@ -50,7 +50,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 func GetUserChallenges(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userId := params["uuid"]
-
 	challenge := repository.GetChallengeByUserId(userId)
 
 	if challenge != nil {

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/stack-attack/the-roomy-dragonflys/repository"
 	util "github.com/stack-attack/the-roomy-dragonflys/utils"
@@ -57,12 +58,26 @@ func GetChallengeBets(w http.ResponseWriter, r *http.Request) {
 		resp["data"] = challenge
 		util.Respond(w, resp)
 	} else {
-		resp := util.Message("Challenge not found with id {" + challengeId + "}")
+		resp := util.Message("[]")
 		w.WriteHeader(http.StatusNotFound)
 		util.Respond(w, resp)
 	}
 }
 
 func GetAmountByChallenges(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get Challenge amount!")
+	vars := mux.Vars(r)
+	challengeId := vars["uuid"]
+	challenges := repository.GetBetsByChallengeId(challengeId)
+
+	var amount int
+
+	for _, challange := range challenges {
+		fmt.Println("Amount:", challange.Amount)
+		amount += challange.Amount
+	}
+
+
+	resp := util.Message("success")
+	resp["data"] = amount
+	util.Respond(w, resp)
 }
