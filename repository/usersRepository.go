@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
-	util "github.com/stack-attack/the-roomy-dragonflys/utils"
+	"github.com/stack-attack/the-roomy-dragonflys/utils"
 )
 
 type User struct {
@@ -31,19 +30,46 @@ func GetUserById(userId string) *User {
 	err := GetDB().Table("users").Where("user_id = ?", userId).First(user).Error
 
 	if err != nil {
-		fmt.Println(err)
 		return nil
 	}
 
 	return user
 }
 
-func (user *User) CreateUser() (map[string]interface{}) {
-	user.UserId = util.GenerateUuid()
-	fmt.Println(user.UserId)
+func (user *User) CreateUser() (map[string]interface{}, int) {
+	user.UserId = utils.GenerateUuid()
+
+	if resp, valid := user.Validate(); !valid {
+		return resp, 400
+	}
+
 	GetDB().Create(user)
 
-	resp := util.Message("success")
+	resp := utils.Message("success")
 	resp["user"] = user
-	return resp
+	return resp, 201
+}
+
+func (user *User) Validate() (map[string]interface{}, bool) {
+	if user.UserId == "" {
+		return utils.Message("UserId data attribute is missing!"), false
+	}
+
+	if user.FirstName == "" {
+		return utils.Message("FirstName data attribute is missing!"), false
+	}
+
+	if user.LastName == "" {
+		return utils.Message("LastName data attribute is missing!"), false
+	}
+
+	if user.Password == "" {
+		return utils.Message("Password data attribute is missing!"), false
+	}
+
+	if user.Email == "" {
+		return utils.Message("Email data attribute is missing!"), false
+	}
+
+	return utils.Message("Everything was fine."), true
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stack-attack/the-roomy-dragonflys/repository"
 	util "github.com/stack-attack/the-roomy-dragonflys/utils"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -20,15 +19,17 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser repository.User
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&newUser)
+
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		util.Respond(w, util.Message("Invalid request"))
 		return
 	}
 
-	json.Unmarshal(reqBody, &newUser)
-	newUser.CreateUser()
-
+	resp, status := newUser.CreateUser()
+	w.WriteHeader(status)
+	util.Respond(w, resp)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {

@@ -20,14 +20,15 @@ func CreateChallenge(w http.ResponseWriter, r *http.Request) {
 	var newChallenge repository.Challenge
 
 	err := json.NewDecoder(r.Body).Decode(&newChallenge)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		util.Respond(w, util.Message("Invalid request"))
-		fmt.Println("Invalid chellenge")
 		return
 	}
 
-	resp := newChallenge.CreateChallenge()
+	resp, status := newChallenge.CreateChallenge()
+	w.WriteHeader(status)
 	util.Respond(w, resp)
 }
 

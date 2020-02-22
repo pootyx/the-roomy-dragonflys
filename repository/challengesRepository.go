@@ -9,9 +9,9 @@ import (
 
 type Challenge struct {
 	gorm.Model
-	UserId      uint      `json:"userId" gorm:"not null"`
+	UserId      string    `json:"userId"`
 	ChallengeId string    `json:"challengeId"`
-	Title	string 		  `json: "title" gorm:"not null"`
+	Title	string 		  `json: "title"`
 	Description string    `json:"description" gorm:"not null"`
 	IsActive    bool      `json:"isActive"`
 	EndDate     time.Time `json:"endDate"`
@@ -19,19 +19,19 @@ type Challenge struct {
 	ProofUrl    string    `json:"proofUrl"`
 }
 
-func (challenge *Challenge) CreateChallenge() map[string]interface{} {
+func (challenge *Challenge) CreateChallenge() (map[string]interface{}, int) {
 	challenge.ChallengeId = utils.GenerateUuid()
+	challenge.IsActive = true
 
-	if resp, ok := challenge.Validate(); !ok {
-		fmt.Println("valami")
-		return resp
+	if resp, valid := challenge.Validate(); !valid {
+		return resp, 400
 	}
 
 	GetDB().Create(challenge)
 
 	resp := utils.Message("success")
 	resp["challenge"] = challenge
-	return resp
+	return resp, 201
 }
 
 func GetChallengeById(id string) *Challenge {
@@ -55,10 +55,24 @@ func GetAllChallenge() []*Challenge {
 }
 
 func (challenge *Challenge) Validate() (map[string]interface{}, bool) {
-	fmt.Println("Validation")
+	if challenge.UserId == "" {
+		return utils.Message("UserId data attribute is missing!"), false
+	}
 
 	if challenge.Title == "" {
-		return utils.Message("Contact name should be on the payload"), false
+		return utils.Message("Title data attribute is missing!"), false
+	}
+
+	if challenge.Description == "" {
+		return utils.Message("Description data attribute is missing!"), false
+	}
+
+	if challenge.EndDate.IsZero() {
+		return utils.Message("EndDate data attribute is missing!"), false
+	}
+
+	if challenge.IsActive {
+		return utils.Message("Description data attribute is missing!"), false
 	}
 
 	return utils.Message("Everything was fine."), true
