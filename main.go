@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stack-attack/the-roomy-dragonflys/controllers"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -14,10 +15,17 @@ func main() {
 	HandleChallengeRequests(r)
 	HandleBetRequests(r)
 
-	err := http.ListenAndServe(":"+"8080", r)
+	err := http.ListenAndServe(":"+getPort(), r)
 	if err != nil {
 		fmt.Print(err)
 	}
+}
+
+func getPort() string {
+	if value, ok := os.LookupEnv("PORT"); ok {
+		return value
+	}
+	return "8080"
 }
 
 func HandleUserRequests(r *mux.Router) {
