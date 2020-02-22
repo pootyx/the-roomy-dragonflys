@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/stack-attack/the-roomy-dragonflys/app"
 	"github.com/stack-attack/the-roomy-dragonflys/controllers"
 	"net/http"
 	"os"
@@ -10,7 +11,9 @@ import (
 
 func main() {
 	r := mux.NewRouter()
+	r.Use(app.JwtAuthentication)
 
+	HandleAuthentication(r)
 	HandleUserRequests(r)
 	HandleChallengeRequests(r)
 	HandleBetRequests(r)
@@ -26,6 +29,11 @@ func getPort() string {
 		return value
 	}
 	return "8080"
+}
+
+func HandleAuthentication(r *mux.Router) {
+	r.HandleFunc("/auth/login", controllers.Authenticate).Methods("POST")
+	r.HandleFunc("/auth/register", controllers.Register).Methods("POST")
 }
 
 func HandleUserRequests(r *mux.Router) {
