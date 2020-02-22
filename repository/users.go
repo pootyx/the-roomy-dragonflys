@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -16,7 +18,7 @@ type User struct {
 func GetUser(id uint) (*User) {
 
 	contact := &User{}
-	err := GetDb().Table("user").Where("id = ?", id).First(contact).Error
+	err := GetDB().Table("user").Where("id = ?", id).First(contact).Error
 	if err != nil {
 		return nil
 	}

@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"os"
 )
@@ -31,6 +32,10 @@ func init() {
 
 	db = conn
 	db.Debug().AutoMigrate(&User{})
+}
+
+func GetDB() *gorm.DB {
+	return db
 }
 
 
