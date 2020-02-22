@@ -5,14 +5,14 @@ import (
 	u "../utils"
 	"encoding/json"
 	"fmt"
+	_ "github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
-	_ "github.com/google/uuid"
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get Users!")
-	repository.CreateUserToDb()
+	fmt.Fprintf(w, "Get All User!")
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +33,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get User!")
+	fmt.Println(w, "Get User by ID!")
+	params := mux.Vars(r)
+	userId := params["uuid"]
+
+	user := repository.GetUser(userId)
+	fmt.Println(user)
+	resp := u.Message(true, "success")
+	resp["data"] = user
+	u.Respond(w, resp)
 }
 
 func GetUserChallenges(w http.ResponseWriter, r *http.Request) {

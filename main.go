@@ -23,7 +23,7 @@ func main() {
 func HandleUserRequests(r *mux.Router) {
 	r.HandleFunc("/users", controllers.GetUsers).Methods("GET")
 	r.HandleFunc("/users", controllers.CreateUser).Methods("POST")
-	r.HandleFunc("/users/{uuid}", controllers.GetUser).Methods("POST")
+	r.HandleFunc("/users/{uuid}", controllers.GetUser).Methods("GET")
 	r.HandleFunc("/users/{uuid}/challenges", controllers.GetUserChallenges).Methods("GET")
 	r.HandleFunc("/users/{uuid}/bets", controllers.GetUserBets).Methods("GET")
 }

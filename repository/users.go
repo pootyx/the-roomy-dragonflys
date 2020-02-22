@@ -8,38 +8,34 @@ import (
 
 type User struct {
 	gorm.Model
-	UserId uint `json:"user_id"`
-	FirstName string `json:"first_name"`
-	LastName string `json:"last_name"`
+	UserId string `json:"userId"`
+	FirstName string `json:"firstName"`
+	LastName string `json:"lastName"`
 	Password string `json:"password"`
 	Email string `json:"email"`
-	IsDeleted string `json:"is_deleted"`
-	PictureUrl string `json:"picture_url"`
+	IsDeleted string `json:"isDeleted"`
+	PictureUrl string `json:"pictureUrl"`
 }
 
-func GetUser(id uint) (*User) {
-	contact := &User{}
-	err := GetDB().Table("user").Where("id = ?", id).First(contact).Error
+func GetUsers() []*User {
+	users := make([]*User, 0)
+	err := GetDB().Find(users).Error
 	if err != nil {
 		return nil
 	}
-	return contact
+	return users
 }
 
-func CreateUserToDb() {
-	user := User{
-		Model:      gorm.Model{},
-		UserId:     1,
-		FirstName:  "Teszt",
-		LastName:   "Elek",
-		Password:   "pasfksafas",
-		Email:      "asasdas@gmail.com",
-		IsDeleted:  "FALSES",
-		PictureUrl: "https://c.disquscdn.com/uploads/users/16133/201/avatar92.jpg?1573664068",
+func GetUser(u string) *User {
+	user := &User{}
+	err := GetDB().Table("users").Where("user_id = ?", u).First(&user)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
 	}
 
-	GetDB().Create(&user)
-	fmt.Println("User created!")
+	return user
 }
 
 func (user *User) Create() (map[string]interface{}) {
