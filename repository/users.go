@@ -1,9 +1,9 @@
 package repository
 
 import (
+	u "../utils"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	u "../utils"
 )
 
 type User struct {
@@ -42,7 +42,7 @@ func CreateUserToDb() {
 	fmt.Println("User created!")
 }
 
-func (user *User) Create (map[string]interface{}) {
+func (user *User) Create() (map[string]interface{}) {
 	GetDB().Create(user)
 
 	resp := u.Message(true, "success")

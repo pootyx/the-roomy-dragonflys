@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	_ "github.com/google/uuid"
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +28,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(reqBody)
 	json.Unmarshal(reqBody, &newUser)
 
-	repository.User.Create()
+	newUser.Create()
 	fmt.Println(newUser)
 }
 
