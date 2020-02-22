@@ -8,12 +8,12 @@ import (
 
 type Bet struct {
 	gorm.Model
-	BetId string `json:"betId"`
-	UserId string `json:"userId"`
+	BetId       string `json:"betId"`
+	UserId      string `json:"userId"`
 	ChallengeId string `json:"challengeId"`
-	Bet bool `json:"bet"`
-	Amount int `json:"amount"`
-	Result int `json:"result"`
+	Bet         bool   `json:"bet"`
+	Amount      int    `json:"amount"`
+	Result      int    `json:"result"`
 }
 
 func GetBetById(betId string) *Bet {
@@ -63,16 +63,25 @@ func (bet *Bet) Validate() (map[string]interface{}, bool) {
 		return utils.Message("Amount data attribute is missing!"), false
 	}
 
-
 	return utils.Message("Everything was fine."), true
 }
 
-func GetBetsByUserId(id string) *Bet {
-	bet := &Bet{}
-	err := GetDB().Table("bets").Where("user_id = ?", id).First(bet).Error
+func GetBetsByUserId(id string) []*Bet {
+	bets := make([]*Bet, 0)
+	err := GetDB().Table("bets").Where("user_id = ?", id).Find(&bets).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	return bet
+	return bets
+}
+
+func GetBetsByChallengeId(id string) []*Bet {
+	bets := make([]*Bet, 0)
+	err := GetDB().Table("bets").Where("challenge_id = ?", id).Find(&bets).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return bets
 }

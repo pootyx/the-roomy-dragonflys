@@ -11,7 +11,7 @@ type Challenge struct {
 	gorm.Model
 	UserId      string    `json:"userId"`
 	ChallengeId string    `json:"challengeId"`
-	Title	string 		  `json: "title"`
+	Title       string    `json: "title"`
 	Description string    `json:"description""`
 	IsActive    bool      `json:"isActive"`
 	EndDate     time.Time `json:"endDate"`
@@ -48,14 +48,14 @@ func GetChallengeById(id string) *Challenge {
 	return challenge
 }
 
-func GetChallengeByUserId(id string) *Challenge {
-	challenge := &Challenge{}
-	err := GetDB().Table("challenges").Where("user_id = ?", id).First(challenge).Error
+func GetChallengeByUserId(id string) []*Challenge {
+	challenges := make([]*Challenge, 0)
+	err := GetDB().Table("challenges").Where("user_id = ?", id).Find(&challenges).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	return challenge
+	return challenges
 }
 
 func GetAllChallenge() []*Challenge {
