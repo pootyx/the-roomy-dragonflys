@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/stack-attack/the-roomy-dragonflys/repository"
 	util "github.com/stack-attack/the-roomy-dragonflys/utils"
@@ -70,12 +69,9 @@ func GetAmountByChallenges(w http.ResponseWriter, r *http.Request) {
 	challenges := repository.GetBetsByChallengeId(challengeId)
 
 	var amount int
-
 	for _, challange := range challenges {
-		fmt.Println("Amount:", challange.Amount)
 		amount += challange.Amount
 	}
-
 
 	resp := util.Message("success")
 	resp["data"] = amount
