@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./controllers"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/stack-attack/the-roomy-dragonflys/controllers"
 	"net/http"
 )
 

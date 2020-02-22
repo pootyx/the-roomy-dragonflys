@@ -1,50 +1,50 @@
 package controllers
 
 import (
-	repository "../repository"
-	u "../utils"
 	"encoding/json"
 	"fmt"
-	_ "github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/stack-attack/the-roomy-dragonflys/repository"
+	util "github.com/stack-attack/the-roomy-dragonflys/utils"
 	"io/ioutil"
 	"net/http"
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users := repository.GetUsers()
-	resp :=  u.Message(true, "success")
+	users := repository.GetAllUsers()
+	resp :=  util.Message("success")
 	resp["data"] = users
-	w.WriteHeader(http.StatusPermanentRedirect)
-	u.Respond(w, resp)
+	util.Respond(w, resp)
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "POST call /users")
 	var newUser repository.User
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request"))
+		util.Respond(w, util.Message("Invalid request"))
 		return
 	}
 
-	fmt.Println(reqBody)
 	json.Unmarshal(reqBody, &newUser)
-	newUser.Create()
-	fmt.Println(newUser)
+	newUser.CreateUser()
+
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(w, "Get User by ID!")
 	params := mux.Vars(r)
 	userId := params["uuid"]
+	user := repository.GetUserById(userId)
 
-	user := repository.GetUser(userId)
-	fmt.Println(user)
-	resp := u.Message(true, "success")
-	resp["data"] = user
-	u.Respond(w, resp)
+	if user != nil {
+		resp := util.Message("success")
+		resp["data"] = user
+		util.Respond(w, resp)
+	} else {
+		resp := util.Message("User not found with id {" + userId + "}")
+		w.WriteHeader(http.StatusNotFound)
+		util.Respond(w, resp)
+	}
 }
 
 func GetUserChallenges(w http.ResponseWriter, r *http.Request) {

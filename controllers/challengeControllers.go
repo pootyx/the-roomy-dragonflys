@@ -1,44 +1,50 @@
 package controllers
 
 import (
-	"../repository"
-	u "../utils"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"io/ioutil"
+	"github.com/stack-attack/the-roomy-dragonflys/repository"
+	util "github.com/stack-attack/the-roomy-dragonflys/utils"
 	"net/http"
 )
 
 func GetChallenges(w http.ResponseWriter, r *http.Request) {
-	data := repository.GetAll()
-	resp := u.Message(true, "success")
+	data := repository.GetAllChallenge()
+	resp := util.Message("success")
 	resp["data"] = data
-	u.Respond(w, resp)
+	util.Respond(w, resp)
 }
 
 func CreateChallenge(w http.ResponseWriter, r *http.Request) {
 	var newChallenge repository.Challenge
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&newChallenge)
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request"))
+		w.WriteHeader(http.StatusBadRequest)
+		util.Respond(w, util.Message("Invalid request"))
+		fmt.Println("Invalid chellenge")
 		return
 	}
-	fmt.Println(reqBody)
-	json.Unmarshal(reqBody, &newChallenge)
 
-	newChallenge.Create()
-	fmt.Println(newChallenge)
+	resp := newChallenge.CreateChallenge()
+	util.Respond(w, resp)
 }
 
 func GetChallenge(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["uuid"]
-	data := repository.GetById(id)
-	resp := u.Message(true, "success")
-	resp["data"] = data
-	u.Respond(w, resp)
+	challengeId := vars["uuid"]
+	challenge := repository.GetChallengeById(challengeId)
+
+	if challenge != nil {
+		resp := util.Message("success")
+		resp["data"] = challenge
+		util.Respond(w, resp)
+	} else {
+		resp := util.Message("Challenge not found with id {" + challengeId + "}")
+		w.WriteHeader(http.StatusNotFound)
+		util.Respond(w, resp)
+	}
 }
 
 func GetChallengeBets(w http.ResponseWriter, r *http.Request) {

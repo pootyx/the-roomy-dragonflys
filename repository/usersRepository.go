@@ -1,9 +1,9 @@
 package repository
 
 import (
-	u "../utils"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	util "github.com/stack-attack/the-roomy-dragonflys/utils"
 )
 
 type User struct {
@@ -17,7 +17,7 @@ type User struct {
 	PictureUrl string `json:"pictureUrl"`
 }
 
-func GetUsers() []*User {
+func GetAllUsers() []*User {
 	users := make([]*User, 0)
 	err := GetDB().Find(&users).Error
 	if err != nil {
@@ -26,7 +26,7 @@ func GetUsers() []*User {
 	return users
 }
 
-func GetUser(userId string) *User {
+func GetUserById(userId string) *User {
 	user := &User{}
 	err := GetDB().Table("users").Where("user_id = ?", userId).First(user).Error
 
@@ -38,10 +38,12 @@ func GetUser(userId string) *User {
 	return user
 }
 
-func (user *User) Create() (map[string]interface{}) {
+func (user *User) CreateUser() (map[string]interface{}) {
+	user.UserId = util.GenerateUuid()
+	fmt.Println(user.UserId)
 	GetDB().Create(user)
 
-	resp := u.Message(true, "success")
+	resp := util.Message("success")
 	resp["user"] = user
 	return resp
 }
