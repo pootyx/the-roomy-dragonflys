@@ -51,3 +51,7 @@ func GetChallenge(w http.ResponseWriter, r *http.Request) {
 func GetChallengeBets(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Get Challenge Bets!")
 }
+
+func GetAmountByChallenges(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Get Challenge amount!")
+}
