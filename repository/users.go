@@ -19,16 +19,16 @@ type User struct {
 
 func GetUsers() []*User {
 	users := make([]*User, 0)
-	err := GetDB().Find(users).Error
+	err := GetDB().Find(&users).Error
 	if err != nil {
 		return nil
 	}
 	return users
 }
 
-func GetUser(u string) *User {
+func GetUser(userId string) *User {
 	user := &User{}
-	err := GetDB().Table("users").Where("user_id = ?", u).First(&user)
+	err := GetDB().Table("users").Where("user_id = ?", userId).First(user).Error
 
 	if err != nil {
 		fmt.Println(err)

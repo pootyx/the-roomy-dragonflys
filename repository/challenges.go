@@ -22,6 +22,7 @@ type Challenge struct {
 func (challenge *Challenge) Create() map[string]interface{} {
 	uuid, err := uuid.NewRandom()
 	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 	challenge.ChallengeId = uuid.String()

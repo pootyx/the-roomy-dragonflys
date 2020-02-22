@@ -12,7 +12,11 @@ import (
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get All User!")
+	users := repository.GetUsers()
+	resp :=  u.Message(true, "success")
+	resp["data"] = users
+	w.WriteHeader(http.StatusPermanentRedirect)
+	u.Respond(w, resp)
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +31,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(reqBody)
 	json.Unmarshal(reqBody, &newUser)
-
 	newUser.Create()
 	fmt.Println(newUser)
 }
