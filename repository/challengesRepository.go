@@ -38,6 +38,21 @@ func (challenge *Challenge) CreateChallenge() (map[string]interface{}, int) {
 	return resp, 201
 }
 
+func (challenge *Challenge) UpdateChallenge(id string) (map[string]interface{}, int) {
+
+	err := GetDB().Table("challenges").Where("challenge_id = ?", id).Update(challenge)
+
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+
+	resp := utils.Message("success")
+	resp["challenge"] = challenge
+	return resp, 200
+
+}
+
 func GetChallengeById(id string) *Challenge {
 	challenge := &Challenge{}
 	err := GetDB().Table("challenges").Where("challenge_id = ?", id).First(challenge).Error

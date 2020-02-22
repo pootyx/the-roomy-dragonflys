@@ -49,6 +49,7 @@ func HandleChallengeRequests(r *mux.Router) {
 	r.HandleFunc("/challenges", controllers.GetChallenges).Methods("GET")
 	r.HandleFunc("/challenges", controllers.CreateChallenge).Methods("POST")
 	r.HandleFunc("/challenges/{uuid}", controllers.GetChallenge).Methods("GET")
+	r.HandleFunc("/challenges/{uuid}", controllers.UpdateChallenge).Methods("PATCH")
 	r.HandleFunc("/challenges/{uuid}/bets", controllers.GetChallengeBets).Methods("GET")
 	r.HandleFunc("/challenges/{uuid}/bets/amount", controllers.GetAmountByChallenges).Methods("GET")
 }

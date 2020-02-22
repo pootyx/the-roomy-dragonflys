@@ -57,7 +57,7 @@ func GetChallengeBets(w http.ResponseWriter, r *http.Request) {
 		resp["data"] = challenge
 		util.Respond(w, resp)
 	} else {
-		resp := util.Message("[]")
+		resp := util.Message("Challenge not found with id {" + challengeId + "}")
 		w.WriteHeader(http.StatusNotFound)
 		util.Respond(w, resp)
 	}
@@ -75,5 +75,23 @@ func GetAmountByChallenges(w http.ResponseWriter, r *http.Request) {
 
 	resp := util.Message("success")
 	resp["data"] = amount
+	util.Respond(w, resp)
+}
+
+func UpdateChallenge(w http.ResponseWriter, r *http.Request) {
+	var newChallenge repository.Challenge
+	err := json.NewDecoder(r.Body).Decode(&newChallenge)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		util.Respond(w, util.Message("Invalid request"))
+		return
+	}
+
+	vars := mux.Vars(r)
+	challengeId := vars["uuid"]
+
+	resp, status := newChallenge.UpdateChallenge(challengeId)
+	w.WriteHeader(status)
 	util.Respond(w, resp)
 }
