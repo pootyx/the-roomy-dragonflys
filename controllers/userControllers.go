@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/stack-attack/the-roomy-dragonflys/repository"
 	util "github.com/stack-attack/the-roomy-dragonflys/utils"
@@ -11,7 +10,7 @@ import (
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users := repository.GetAllUsers()
-	resp :=  util.Message("success")
+	resp := util.Message("success")
 	resp["data"] = users
 	util.Respond(w, resp)
 }
@@ -49,9 +48,35 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserChallenges(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get User Challenges!")
+	params := mux.Vars(r)
+	userId := params["uuid"]
+
+	challenge := repository.GetChallengeByUserId(userId)
+
+	if challenge != nil {
+		resp := util.Message("success")
+		resp["data"] = challenge
+		util.Respond(w, resp)
+	} else {
+		resp := util.Message("User not found with id {" + userId + "}")
+		w.WriteHeader(http.StatusNotFound)
+		util.Respond(w, resp)
+	}
 }
 
 func GetUserBets(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Get User Bets!")
+	params := mux.Vars(r)
+	userId := params["uuid"]
+
+	bets := repository.GetBetsByUserId(userId)
+
+	if bets != nil {
+		resp := util.Message("success")
+		resp["data"] = bets
+		util.Respond(w, resp)
+	} else {
+		resp := util.Message("User not found with id {" + userId + "}")
+		w.WriteHeader(http.StatusNotFound)
+		util.Respond(w, resp)
+	}
 }

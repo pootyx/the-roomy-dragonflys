@@ -11,7 +11,7 @@ type Challenge struct {
 	gorm.Model
 	UserId      string    `json:"userId"`
 	ChallengeId string    `json:"challengeId"`
-	Title	string 		  `json: "title"`
+	Title       string    `json: "title"`
 	Description string    `json:"description" gorm:"not null"`
 	IsActive    bool      `json:"isActive"`
 	EndDate     time.Time `json:"endDate"`
@@ -27,7 +27,11 @@ func (challenge *Challenge) CreateChallenge() (map[string]interface{}, int) {
 		return resp, 400
 	}
 
-	GetDB().Create(challenge)
+	err := GetDB().Create(challenge).Error
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
 
 	resp := utils.Message("success")
 	resp["challenge"] = challenge
@@ -37,6 +41,16 @@ func (challenge *Challenge) CreateChallenge() (map[string]interface{}, int) {
 func GetChallengeById(id string) *Challenge {
 	challenge := &Challenge{}
 	err := GetDB().Table("challenges").Where("challenge_id = ?", id).First(challenge).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return challenge
+}
+
+func GetChallengeByUserId(id string) *Challenge {
+	challenge := &Challenge{}
+	err := GetDB().Table("challenges").Where("user_id = ?", id).First(challenge).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -71,10 +85,5 @@ func (challenge *Challenge) Validate() (map[string]interface{}, bool) {
 		return utils.Message("EndDate data attribute is missing!"), false
 	}
 
-	if challenge.IsActive {
-		return utils.Message("Description data attribute is missing!"), false
-	}
-
 	return utils.Message("Everything was fine."), true
 }
-
